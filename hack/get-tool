@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# Fetch the newest published tool binary into the workspace.
+set -eu
+REPO="${TOOL_REPO:?}"
+OUT="${TOOL_OUTPUT_PATH:-bin/tool}"
+mkdir -p "$(dirname "$OUT")"
+TAG=$(curl -sSfL "https://api.github.com/repos/$REPO/releases/latest" | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1)
+echo "fetching tool $TAG"
+curl -sSfL "https://github.com/$REPO/releases/download/$TAG/tool-amd64-linux" -o "$OUT"
+chmod +x "$OUT"
